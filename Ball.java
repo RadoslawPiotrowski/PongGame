@@ -22,8 +22,8 @@ public class Ball {
         Start the ball travelling straight up
         at a quarter of the screen height per second
     */
-        mYVelocity = screenY / 8;
-        mXVelocity = mYVelocity / 2;
+        mYVelocity = screenY / 4;
+        mXVelocity = mYVelocity;
 
         // Initialize the Rect that represents the mBall
         mRect = new RectF();
@@ -66,23 +66,9 @@ public class Ball {
     // Speed up by 10%
 // A score of over 20 is quite difficult
 // Reduce or increase 10 to make this easier or harder
-    public void increaseVelocity(double mSpeed){
-        double mXAbsoluteVelocity = Math.abs(mXVelocity);
-        double mYAbsoluteVelocity = Math.abs(mYVelocity);
-        mXAbsoluteVelocity += mSpeed;
-        mYAbsoluteVelocity += mSpeed;
-        if (mXVelocity < 0){
-            mXVelocity = (float) (mXAbsoluteVelocity * (-1));
-        }
-        else{
-            mXVelocity = (float) (mXAbsoluteVelocity);
-        }
-        if (mYVelocity < 0){
-            mYVelocity = (float) (mYAbsoluteVelocity * (-1));
-        }
-        else{
-            mYVelocity = (float) (mYAbsoluteVelocity);
-        }
+    public void increaseVelocity(){
+        mXVelocity = mXVelocity + mXVelocity / 10;
+        mYVelocity = mYVelocity + mYVelocity / 10;
     }
 
     public void clearObstacleY(float y){
@@ -97,9 +83,9 @@ public class Ball {
 
     public void reset(int x, int y){
         mRect.left = x / 2;
-        mRect.top = y - 300;
+        mRect.top = y/2;
         mRect.right = x / 2 + mBallWidth;
-        mRect.bottom = y - 300 - mBallHeight;
+        mRect.bottom = y/2;
     }
 
 
