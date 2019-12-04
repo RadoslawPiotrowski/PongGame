@@ -49,9 +49,12 @@ public class PongView extends SurfaceView implements Runnable{
 
     // The mScore
     int mScore = 0;
-    // the second score
 
+    // Lives
     int mScore2 = 0;
+
+    double mBallAcceleration = 0.01;
+    double mBallSpeedUp = 0;
 
     public PongView(Context context, int x, int y) {
 
@@ -83,7 +86,7 @@ public class PongView extends SurfaceView implements Runnable{
 
     public void setupAndRestart(){
         // Put the mBall back to the start
-        mBall.reset(mScreenX, mScreenY);
+        mBall.reset(mScreenX, mScreenY, 0);
 
         // if game over reset scores and mScore2
         if(mScore2 == 0) {
@@ -130,22 +133,21 @@ public class PongView extends SurfaceView implements Runnable{
 
         mBall.update(mFPS);
 
+        mBallSpeedUp += mBallAcceleration;
+        mBall.increaseVelocity(mBallSpeedUp);
+
         // Check for mBall colliding with mBat
         if(RectF.intersects(mBat.getRect(), mBall.getRect())) {
             mBall.setRandomXVelocity();
             mBall.reverseYVelocity();
-            mBall.clearObstacleY(mBat.getRect().top - 2);
-
-            mBall.increaseVelocity();
+            mBall.clearObstacleY(mBat.getRect().top - 5);
         }
 
         // Check for mBall colliding with second mBat
         if(RectF.intersects(mBatTwo.getRect(), mBall.getRect())) {
             mBall.setRandomXVelocity();
             mBall.reverseYVelocity();
-            mBall.clearObstacleY(mBatTwo.getRect().bottom + 2);
-
-            mBall.increaseVelocity();
+            mBall.clearObstacleY(mBatTwo.getRect().bottom + 5);
         }
 
         // Bounce the mBall back when it hits the bottom of screen
@@ -153,9 +155,10 @@ public class PongView extends SurfaceView implements Runnable{
             mBall.reverseYVelocity();
             mBall.clearObstacleY(mScreenY - 2);
 
-            mScore2++;
-            mBall.reset(mScreenX, mScreenY);
 
+            mScore2++;
+            mBall.reset(mScreenX, mScreenY, 0);
+            mBallSpeedUp = 0;
             mPaused = true;
         }
 
@@ -163,8 +166,11 @@ public class PongView extends SurfaceView implements Runnable{
         if(mBall.getRect().top < 0){
             mBall.reverseYVelocity();
             mBall.clearObstacleY(12);
+
+
             mScore++;
-            mBall.reset(mScreenX, mScreenY);
+            mBall.reset(mScreenX, mScreenY, 1);
+            mBallSpeedUp = 0;
             mPaused = true;
         }
 
@@ -193,10 +199,10 @@ public class PongView extends SurfaceView implements Runnable{
             mCanvas = mOurHolder.lockCanvas();
 
             // Clear the screen with my favorite color
-            mCanvas.drawColor(Color.argb(255, 120, 197, 87));
+            mCanvas.drawColor(Color.argb(255, 0, 0, 0));
 
             // Choose the brush color for drawing
-            mPaint.setColor(Color.argb(255, 255, 255, 255));
+            mPaint.setColor(Color.argb(255, 200, 0, 0));
 
             // Draw the mBat
             mCanvas.drawRect(mBat.getRect(), mPaint);
